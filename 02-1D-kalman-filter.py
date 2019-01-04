@@ -191,10 +191,6 @@ def kalman_filter(x, P):
     
     return x,P
 
-############################################
-### use the code below to test your filter!
-############################################
-
 
 print(kalman_filter(x, P))
 # output should be:
