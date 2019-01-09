@@ -146,19 +146,31 @@ class matrix:
 
 def filter(x, P):
     for n in range(len(measurements)):
-        
+        print()
         # prediction
-        x = (F * x) + u
-        P = F * P * F.transpose()
-        
+        #Transition matrix F converts old x to new x. u is external motion/acceleration
+        x = (F * x) + u 
+        # update the covariance matrix based on kinematic equations, ignores process error 
+        P = F * P * F.transpose() 
+
         # measurement update
-        Z = matrix([measurements[n]])
-        print(Z.transpose())
-        print(x)
-        y = Z.transpose() - (H * x)
+        Z = matrix([measurements[n]]) #grab the measurement
+
+        # H turns state x into equivalent measurement of JUST position (no velocities)
+        # y is thus a matrix of differences between measured and observed positions in the two dimensions (+ve if measured is greater)
+        y = Z.transpose() - (H * x) 
+
+        # intermediate step for Kalman gain: S is the total uncertainty 
         S = H * P * H.transpose() + R
+
+        # calculate Kalman gain
+        # equivalent to K = (error in estimate)/(error in estimate + error in measurement)
         K = P * H.transpose() * S.inverse()
+        
+        # use Kalman gain to get new predicted x
         x = x + (K * y)
+        
+        # use Kalman gain to get new predicted covariance matrix
         P = (I - (K * H)) * P
     
     print('x= ')
@@ -199,7 +211,7 @@ F = matrix([
 		[0., 1., 0., dt],
 		[0., 0., 1., 0],
 		[0., 0., 0., 1.]
-	]) # next state function: generalize the 2d version to 4d
+	]) # transition matrix: used to make a prediction from previous state
 
 H = matrix([
 		[1., 0., 0., 0.],
