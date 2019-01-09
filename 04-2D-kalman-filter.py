@@ -162,7 +162,7 @@ def filter(x, P):
 
         # intermediate step for Kalman gain: S is the total uncertainty 
         S = H * P * H.transpose() + R
-
+        print('S', S)
         # calculate Kalman gain
         # equivalent to K = (error in estimate)/(error in estimate + error in measurement)
         K = P * H.transpose() * S.inverse()
@@ -182,7 +182,7 @@ def filter(x, P):
 
 print("### 4-dimensional example ###")
 
-measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
+measurements = [[5., 10.]]
 initial_xy = [4., 12.]
 
 # measurements = [[1., 4.], [6., 0.], [11., -4.], [16., -8.]]

@@ -78,6 +78,95 @@ Y(k) = CX(k) + Z(k)
 
 C is how we extract the observables from the state matrix.
 
+================
+#The covariance matrices
+P is the state covariance matrice (the error in the estimate)
 
+Q is the process noise covariance matrice (errors in the process, e.g. not taking wind into account). This keeps the state covariance matrix from becoming too small.
+
+R is the measurement covariance matrix (the error in the measurement).
+
+P<sub>k</sub> = AP<sub>k-1</sub>A<sup>T</sup> + Q
+
+K<sub>k</sub> = (P<sub>k</sub>H<sup>T</sup>)/(HP<sub>k</sub>H<sup>T</sup> + R)
+
+i.e. the kalman gain is the same as it is above. 
+
+##What is a covariance matrix?
+[
+	x-variance,     x-y-covariance,
+	y-x-covariance, y-variance
+]
+
+where x-y-covariance is the same as the y-x-covariance. 
+
+===========
+
+#1D (x, x_dot) matrix example
+
+##1 - make prediction based on initial estimates
+X<sub>k</sub> = AX<sub>k-1</sub> + BU<sub>k</sub> + w<sub>k</sub>
+
+http://www.ilectureonline.com/lectures/subject/SPECIAL%20TOPICS/26/190/1975
+
+(where
+	X<sub>k</sub> = predicted state at time k
+	X<sub>k-1</sub> = previous state (at time k-1)	
+	A = matrix that allows us to make an estimate from the previous state based on kinematic equations
+	U = control variable matrix (external factors)
+	B = matrix that allows us to make an estimate from the U based on kinematic equations
+	w = process noise (noise in the process of making estimates)
+)
+
+##2 - Calculate initial process covariance matrix 
+In the process we have some errors in the calculation. If x error is 20m and x_dot error is 5m/s, process covariance matrix P is:
+[
+	400, 100
+	100, 25
+]
+
+
+We often set the covariances to zero, i.e.
+
+[
+	400, 0
+	0,   25
+]
+
+##3 - Calculate predicted process covariance matrix from initial covariance matrix
+
+P<sub>k</sub> = AP<sub>k-1</sub> A<sup>T</sup> + Q<sub>k</sub>
+
+Where Q is the error in calculating the process covariance matrix
+
+##4 Calculate kalman gain
+K =  P<sub>k</sub>H<sup>T</sup>
+	---------------------------
+   HP<sub>k</sub>H<sup>T</sup> + R
+
+Where H is just a matrix that shapes the other matrices. R is the observation errors (in the same shape/format as the covariance matrix)
+
+##5 calculate the new observed matrix 
+http://www.ilectureonline.com/lectures/subject/SPECIAL%20TOPICS/26/190/5793
+Y<sub>k</sub> = CY<sub>km</sub> + Z<sub>k</sub>
+
+Y is the observed state matrix. 
+
+where Z is the observation error due to delays/electronics etc. Frequently zero. 
+
+C is the matrix to transform the observation into the same shape as the state matrix
+
+##6 combine predicted state with observation to make NEW predicted state.
+X<sub>k</sub> = X<sub>kp</sub> + K(Y<sub>k</sub> - HX<sub>kp</sub>)
+
+X<sub>k</sub> = new prediction
+X<sub>kp</sub> = old prediction
+K = Kalman gain
+Y<sub>k</sub> = measurement
+H = transformation matrix (often the identity matrix)
+
+##7 Update process covariance matrix (ready for next iteration)
+
+P<sub></sub>k = (I - KH)P<sub>kp</sub>
 
 
