@@ -150,23 +150,27 @@ def filter(x, P):
         # prediction
         #Transition matrix F converts old x to new x. u is external motion/acceleration
         x = (F * x) + u 
+        print('H*x', H*x)
         # update the covariance matrix based on kinematic equations, ignores process error 
         P = F * P * F.transpose() 
-
+        
         # measurement update
         Z = matrix([measurements[n]]) #grab the measurement
 
         # H turns state x into equivalent measurement of JUST position (no velocities)
         # y is thus a matrix of differences between measured and observed positions in the two dimensions (+ve if measured is greater)
         y = Z.transpose() - (H * x) 
-
+        print('y', y)
         # intermediate step for Kalman gain: S is the total uncertainty 
         S = H * P * H.transpose() + R
-        print('S', S)
+        
         # calculate Kalman gain
+        # print('P', P)
+        # print('H.transpose()', H.transpose())
+        # print('Kup', P * H.transpose())
         # equivalent to K = (error in estimate)/(error in estimate + error in measurement)
         K = P * H.transpose() * S.inverse()
-        
+        # print('K', K)
         # use Kalman gain to get new predicted x
         x = x + (K * y)
         
@@ -182,7 +186,7 @@ def filter(x, P):
 
 print("### 4-dimensional example ###")
 
-measurements = [[5., 10.]]
+measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
 initial_xy = [4., 12.]
 
 # measurements = [[1., 4.], [6., 0.], [11., -4.], [16., -8.]]
