@@ -1,14 +1,14 @@
 import numpy as np
 
+
 def filter(x, P):
 	for Z in measurements:
 		Z = np.matrix([Z])
-
+		print(Z)
 		print()
 		# PREDICTION
 		#Transition matrix A converts old x to new x. B is transition matrix that converts u into an adjustment for position and velocity, where u is external motion/acceleration.
 		# w is the process noise term 
-		print(B*u)
 		x = A*x + B*u + w 
 		
 		# update the covariance matrix based on kinematic equations
@@ -35,26 +35,26 @@ def filter(x, P):
 		# use Kalman gain to get new predicted covariance matrix
 		P = (I - K*H) * P
 	
-	print('x= ', x)
+		print('x= ', x)
 	
-	print('P= ', P)
+		print('P= ', P)
 	
 
 ########################################
 
 
 measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
-initial_xy = [4., 12.]
+initial_xy = [4, 12]
 
-dt = 0.1
+dt = 1
 
 x = np.matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]]) # initial state (location and velocity)
 
 P =  np.matrix([
-		[0.,0.,0.,0.],
-		[0.,0.,0.,0.],
-		[0.,0.,1000.,0.],
-		[0.,0.,0.,1000.]
+		[0,0,0,0],
+		[0,0,0,0],
+		[0,0,1000,0],
+		[0,0,0,1000]
 	]) 
 
 # state transition matrix (converts old state to new state)
@@ -99,8 +99,8 @@ H = np.matrix([
 
 # measurement error
 R =  np.matrix([
-		[0.1, 0.],
-		[0., 0.1]
+		[10, 0],
+		[0, 10]
 	])
 
 # error term for calculating covariance matrix
@@ -113,6 +113,5 @@ Q = np.matrix([
 
 # identity matrix
 I = np.eye(4)
-
 
 filter(x, P)

@@ -150,7 +150,7 @@ def filter(x, P):
         # prediction
         #Transition matrix F converts old x to new x. u is external motion/acceleration
         x = (F * x) + u 
-        print('H*x', H*x)
+
         # update the covariance matrix based on kinematic equations, ignores process error 
         P = F * P * F.transpose() 
         
@@ -160,7 +160,7 @@ def filter(x, P):
         # H turns state x into equivalent measurement of JUST position (no velocities)
         # y is thus a matrix of differences between measured and observed positions in the two dimensions (+ve if measured is greater)
         y = Z.transpose() - (H * x) 
-        print('y', y)
+
         # intermediate step for Kalman gain: S is the total uncertainty 
         S = H * P * H.transpose() + R
         
@@ -177,8 +177,8 @@ def filter(x, P):
         # use Kalman gain to get new predicted covariance matrix
         P = (I - (K * H)) * P
     
-    print('x= ')
-    x.show()
+        print('x= ')
+        x.show()
     print('P= ')
     P.show()
 
@@ -186,7 +186,7 @@ def filter(x, P):
 
 print("### 4-dimensional example ###")
 
-measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [10., 0.]]
+measurements = [[5., 10.], [6., 8.], [7., 6.], [8., 4.], [9., 2.], [9.5,1] ,[10., 0.],[10., 0.],[10., 0.],[10., 0.],[10., 0.],[10., 0.],[10., 0.],[10., 0.],[10., 0.],[10., 0.],[10., 0.]]
 initial_xy = [4., 12.]
 
 # measurements = [[1., 4.], [6., 0.], [11., -4.], [16., -8.]]
@@ -195,7 +195,7 @@ initial_xy = [4., 12.]
 # measurements = [[1., 17.], [1., 15.], [1., 13.], [1., 11.]]
 # initial_xy = [1., 19.]
 
-dt = 0.1
+dt = 30
 
 x = matrix([[initial_xy[0]], [initial_xy[1]], [0.], [0.]]) # initial state (location and velocity)
 u = matrix([[0.], [0.], [0.], [0.]]) # external motion
@@ -204,10 +204,10 @@ u = matrix([[0.], [0.], [0.], [0.]]) # external motion
 #### fill this in, remember to use the matrix() function!: ####
 
 P =  matrix([
-		[0.,0.,0.,0.],
-		[0.,0.,0.,0.],
-		[0.,0.,1000.,0.],
-		[0.,0.,0.,1000.]
+		[10000.,0.,0.,0.],
+		[0.,10000.,0.,0.],
+		[0.,0.,10000.,0.],
+		[0.,0.,0.,10000.]
 	]) # initial uncertainty: 0 for positions x and y, 1000 for the two velocities
 
 F = matrix([
@@ -223,8 +223,8 @@ H = matrix([
 	]) # measurement function: reflect the fact that we observe x and y but not the two velocities
 
 R =  matrix([
-		[0.1, 0.],
-		[0., 0.1]
+		[1, 0.],
+		[0.,1]
 	])
 
 # measurement uncertainty: use 2x2 matrix with 0.1 as main diagonal
